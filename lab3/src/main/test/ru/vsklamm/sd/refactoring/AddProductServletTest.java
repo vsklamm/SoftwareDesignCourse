@@ -1,63 +1,22 @@
 package ru.vsklamm.sd.refactoring;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import ru.vsklamm.sd.refactoring.servlet.AddProductServlet;
 import ru.vsklamm.sd.refactoring.servlet.GetProductsServlet;
+import ru.vsklamm.sd.refactoring.servlet.ServletTestWrapper;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
-import static ru.vsklamm.sd.refactoring.database.ControllerDB.*;
 
-public class AddProductServletTest {
-    private final StringWriter writer = new StringWriter();
-    private static final String DATABASE = "jdbc:sqlite:test.db";
-
-    @Mock
-    private HttpServletRequest mockRequest;
-
-    @Mock
-    private HttpServletResponse mockResponse;
+public class AddProductServletTest extends ServletTestWrapper {
 
     private void addOneProduct(final String name, final String price) throws IOException {
         when(mockRequest.getParameter("name")).thenReturn(name);
         when(mockRequest.getParameter("price")).thenReturn(price);
         new AddProductServlet().doGet(mockRequest, mockResponse);
-    }
-
-    private void runSQL(String sql) {
-        try (var statement = createStatement()) {
-            statement.executeUpdate(sql);
-        } catch (SQLException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
-    @Before
-    public void setMocks() throws IOException {
-        MockitoAnnotations.openMocks(this);
-        when(mockResponse.getWriter()).thenReturn(new PrintWriter(writer));
-    }
-
-    @Before
-    public void createProductDB() {
-        runSQL(CREATE_PRODUCT);
-    }
-
-    @After
-    public void dropProductDB() {
-        runSQL(DROP_PRODUCT);
     }
 
     @Test

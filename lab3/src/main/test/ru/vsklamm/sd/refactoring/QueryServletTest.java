@@ -30,4 +30,28 @@ public class QueryServletTest extends ServletTestWrapper {
         final var result = writer.toString();
         assertTrue(result.contains("6"));
     }
+
+    @Test
+    @DisplayName("Max test")
+    public void testMax() throws IOException {
+        addOneProduct("product1", "1");
+        addOneProduct("product2", "2");
+        addOneProduct("product3", "3");
+        when(mockRequest.getParameter("command")).thenReturn("max");
+        new QueryServlet().doGet(mockRequest, mockResponse);
+        final var result = writer.toString();
+        assertTrue(result.contains("product3\t3"));
+    }
+
+    @Test
+    @DisplayName("Min test")
+    public void testMin() throws IOException {
+        addOneProduct("product1", "1");
+        addOneProduct("product2", "2");
+        addOneProduct("product3", "3");
+        when(mockRequest.getParameter("command")).thenReturn("min");
+        new QueryServlet().doGet(mockRequest, mockResponse);
+        final var result = writer.toString();
+        assertTrue(result.contains("product1\t1"));
+    }
 }

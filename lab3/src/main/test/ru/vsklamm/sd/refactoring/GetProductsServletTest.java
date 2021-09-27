@@ -8,32 +8,22 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import ru.akirakozov.sd.refactoring.servlet.GetProductsServlet;
 
+import static ru.akirakozov.sd.refactoring.database.ControllerDB.*;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
+import static ru.akirakozov.sd.refactoring.database.ControllerDB.createStatement;
 
 public class GetProductsServletTest {
     private final StringWriter writer = new StringWriter();
     private static final String DATABASE = "jdbc:sqlite:test.db";
-
-    private static final String SQL_INPUT =
-            "INSERT INTO PRODUCT(NAME, PRICE) " +
-                    "VALUES ('bath_water', 1000), ('hydrate', 10), ('water', 100), ('sub', 50)";
-    private static final String CREATE_PRODUCT =
-            "CREATE TABLE IF NOT EXISTS PRODUCT" +
-                    "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-                    " NAME           TEXT    NOT NULL, " +
-                    " PRICE          INT     NOT NULL)";
-    private static final String DROP_PRODUCT =
-            "DROP TABLE IF EXISTS PRODUCT";
 
     @Mock
     private HttpServletRequest mockRequest;
@@ -42,10 +32,8 @@ public class GetProductsServletTest {
     private HttpServletResponse mockResponse;
 
     private void runSQL(final String sql) {
-        try (Connection c = DriverManager.getConnection(DATABASE)) {
-            var statement = c.createStatement();
+        try (var statement = createStatement()) {
             statement.executeUpdate(sql);
-            statement.close();
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
@@ -70,7 +58,7 @@ public class GetProductsServletTest {
     @Test
     @DisplayName("testing GetProductServlet")
     public void someProductsTest() throws IOException {
-        runSQL(SQL_INPUT);
+        runSQL(SQL_TEST_INPUT);
         new GetProductsServlet().doGet(mockRequest, mockResponse);
         final var result = writer.toString();
         assertTrue(result.contains("bath_water\t1000"));

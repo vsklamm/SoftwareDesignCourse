@@ -9,13 +9,13 @@ import org.mockito.MockitoAnnotations;
 import ru.akirakozov.sd.refactoring.servlet.AddProductServlet;
 import ru.akirakozov.sd.refactoring.servlet.GetProductsServlet;
 
+import static ru.akirakozov.sd.refactoring.database.ControllerDB.*;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -24,14 +24,6 @@ import static org.mockito.Mockito.when;
 public class AddProductServletTest {
     private final StringWriter writer = new StringWriter();
     private static final String DATABASE = "jdbc:sqlite:test.db";
-
-    private static final String CREATE_PRODUCT =
-            "CREATE TABLE IF NOT EXISTS PRODUCT" +
-                    "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-                    " NAME           TEXT    NOT NULL, " +
-                    " PRICE          INT     NOT NULL)";
-    private static final String DROP_PRODUCT =
-            "DROP TABLE IF EXISTS PRODUCT";
 
     @Mock
     private HttpServletRequest mockRequest;
@@ -46,10 +38,8 @@ public class AddProductServletTest {
     }
 
     private void runSQL(String sql) {
-        try (Connection c = DriverManager.getConnection(DATABASE)) {
-            var statement = c.createStatement();
+        try (var statement = createStatement()) {
             statement.executeUpdate(sql);
-            statement.close();
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }

@@ -1,4 +1,4 @@
-package ru.akirakozov.sd.refactoring.database;
+package ru.vsklamm.sd.refactoring.database;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;

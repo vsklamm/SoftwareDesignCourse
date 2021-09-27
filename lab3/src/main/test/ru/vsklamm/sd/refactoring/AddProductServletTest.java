@@ -6,10 +6,8 @@ import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import ru.akirakozov.sd.refactoring.servlet.AddProductServlet;
-import ru.akirakozov.sd.refactoring.servlet.GetProductsServlet;
-
-import static ru.akirakozov.sd.refactoring.database.ControllerDB.*;
+import ru.vsklamm.sd.refactoring.servlet.AddProductServlet;
+import ru.vsklamm.sd.refactoring.servlet.GetProductsServlet;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,6 +18,7 @@ import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
+import static ru.vsklamm.sd.refactoring.database.ControllerDB.*;
 
 public class AddProductServletTest {
     private final StringWriter writer = new StringWriter();

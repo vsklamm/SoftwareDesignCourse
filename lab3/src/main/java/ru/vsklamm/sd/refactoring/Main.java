@@ -1,17 +1,16 @@
-package ru.akirakozov.sd.refactoring;
+package ru.vsklamm.sd.refactoring;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import ru.akirakozov.sd.refactoring.servlet.AddProductServlet;
-import ru.akirakozov.sd.refactoring.servlet.GetProductsServlet;
-import ru.akirakozov.sd.refactoring.servlet.QueryServlet;
-
-import static ru.akirakozov.sd.refactoring.database.ControllerDB.createDatabase;
+import ru.vsklamm.sd.refactoring.servlet.AddProductServlet;
+import ru.vsklamm.sd.refactoring.servlet.GetProductsServlet;
+import ru.vsklamm.sd.refactoring.servlet.QueryServlet;
+import ru.vsklamm.sd.refactoring.database.ControllerDB;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        createDatabase();
+        ControllerDB.createDatabase();
 
         Server server = new Server(8081);
 

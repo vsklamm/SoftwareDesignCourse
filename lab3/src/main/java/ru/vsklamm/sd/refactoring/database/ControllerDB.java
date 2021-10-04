@@ -1,5 +1,6 @@
 package ru.vsklamm.sd.refactoring.database;
 
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -19,12 +20,16 @@ public class ControllerDB {
             "DROP TABLE IF EXISTS PRODUCT";
 
     public static Statement createStatement() throws SQLException {
-        return DriverManager.getConnection(DATABASE).createStatement();
+        return getConnection().createStatement();
     }
 
     public static void createDatabase() throws SQLException {
         try (var statement = createStatement()) {
             statement.executeUpdate(CREATE_PRODUCT);
         }
+    }
+
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(DATABASE);
     }
 }

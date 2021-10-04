@@ -5,8 +5,6 @@ import org.junit.jupiter.api.DisplayName;
 import ru.vsklamm.sd.refactoring.servlet.GetProductsServlet;
 import ru.vsklamm.sd.refactoring.servlet.ServletTestWrapper;
 
-import java.io.IOException;
-
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static ru.vsklamm.sd.refactoring.database.ControllerDB.*;
 
@@ -14,7 +12,7 @@ public class GetProductsServletTest extends ServletTestWrapper {
 
     @Test
     @DisplayName("testing GetProductServlet")
-    public void someProductsTest() throws IOException {
+    public void someProductsTest() {
         runSQL(SQL_TEST_INPUT);
         new GetProductsServlet().doGet(mockRequest, mockResponse);
         final var result = writer.toString();

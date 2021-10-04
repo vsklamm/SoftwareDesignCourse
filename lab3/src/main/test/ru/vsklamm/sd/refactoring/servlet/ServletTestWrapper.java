@@ -27,7 +27,7 @@ public class ServletTestWrapper {
     }
 
     @Mock
-    protected HttpServletRequest mockRequest; // FIXME:
+    protected HttpServletRequest mockRequest;
 
     @Mock
     protected HttpServletResponse mockResponse;

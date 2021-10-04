@@ -6,14 +6,12 @@ import ru.vsklamm.sd.refactoring.servlet.AddProductServlet;
 import ru.vsklamm.sd.refactoring.servlet.QueryServlet;
 import ru.vsklamm.sd.refactoring.servlet.ServletTestWrapper;
 
-import java.io.IOException;
-
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 public class QueryServletTest extends ServletTestWrapper {
 
-    private void addOneProduct(final String name, final String price) throws IOException {
+    private void addOneProduct(final String name, final String price) {
         when(mockRequest.getParameter("name")).thenReturn(name);
         when(mockRequest.getParameter("price")).thenReturn(price);
         new AddProductServlet().doGet(mockRequest, mockResponse);
@@ -21,7 +19,7 @@ public class QueryServletTest extends ServletTestWrapper {
 
     @Test
     @DisplayName("Sum test")
-    public void testSum() throws IOException {
+    public void testSum() {
         addOneProduct("product1", "1");
         addOneProduct("product2", "2");
         addOneProduct("product3", "3");
@@ -33,7 +31,7 @@ public class QueryServletTest extends ServletTestWrapper {
 
     @Test
     @DisplayName("Max test")
-    public void testMax() throws IOException {
+    public void testMax() {
         addOneProduct("product1", "1");
         addOneProduct("product2", "2");
         addOneProduct("product3", "3");
@@ -45,7 +43,7 @@ public class QueryServletTest extends ServletTestWrapper {
 
     @Test
     @DisplayName("Min test")
-    public void testMin() throws IOException {
+    public void testMin() {
         addOneProduct("product1", "1");
         addOneProduct("product2", "2");
         addOneProduct("product3", "3");

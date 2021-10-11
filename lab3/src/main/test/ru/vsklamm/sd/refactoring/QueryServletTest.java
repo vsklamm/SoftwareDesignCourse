@@ -52,4 +52,16 @@ public class QueryServletTest extends ServletTestWrapper {
         final var result = writer.toString();
         assertTrue(result.contains("product1\t1"));
     }
+
+    @Test
+    @DisplayName("Count test")
+    public void testCount() {
+        addOneProduct("product1", "1");
+        addOneProduct("product2", "2");
+        addOneProduct("product3", "3");
+        when(mockRequest.getParameter("command")).thenReturn("count");
+        new QueryServlet().doGet(mockRequest, mockResponse);
+        final var result = writer.toString();
+        assertTrue(result.contains("3"));
+    }
 }

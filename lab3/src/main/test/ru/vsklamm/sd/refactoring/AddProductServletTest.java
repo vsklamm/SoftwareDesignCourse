@@ -2,6 +2,7 @@ package ru.vsklamm.sd.refactoring;
 
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
+import ru.vsklamm.sd.refactoring.model.ProductDAO;
 import ru.vsklamm.sd.refactoring.servlet.AddProductServlet;
 import ru.vsklamm.sd.refactoring.servlet.GetProductsServlet;
 import ru.vsklamm.sd.refactoring.servlet.ServletTestWrapper;
@@ -14,7 +15,7 @@ public class AddProductServletTest extends ServletTestWrapper {
     private void addOneProduct(final String name, final String price) {
         when(mockRequest.getParameter("name")).thenReturn(name);
         when(mockRequest.getParameter("price")).thenReturn(price);
-        new AddProductServlet().doGet(mockRequest, mockResponse);
+        new AddProductServlet(new ProductDAO()).doGet(mockRequest, mockResponse);
     }
 
     @Test
@@ -23,7 +24,7 @@ public class AddProductServletTest extends ServletTestWrapper {
         addOneProduct("product", "1");
         var result = writer.toString();
         assertTrue(result.contains("OK"));
-        new GetProductsServlet().doGet(mockRequest, mockResponse);
+        new GetProductsServlet(new ProductDAO()).doGet(mockRequest, mockResponse);
         result = writer.toString();
         assertTrue(result.contains("product"));
     }
@@ -43,7 +44,7 @@ public class AddProductServletTest extends ServletTestWrapper {
         result = writer.toString();
         assertTrue(result.contains("OK"));
 
-        new GetProductsServlet().doGet(mockRequest, mockResponse);
+        new GetProductsServlet(new ProductDAO()).doGet(mockRequest, mockResponse);
         result = writer.toString();
         assertTrue(result.contains("product1"));
         assertTrue(result.contains("product2"));

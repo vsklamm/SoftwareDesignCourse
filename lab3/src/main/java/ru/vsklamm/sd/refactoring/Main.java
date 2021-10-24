@@ -3,6 +3,7 @@ package ru.vsklamm.sd.refactoring;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import ru.vsklamm.sd.refactoring.model.ProductDAO;
 import ru.vsklamm.sd.refactoring.servlet.AddProductServlet;
 import ru.vsklamm.sd.refactoring.servlet.GetProductsServlet;
 import ru.vsklamm.sd.refactoring.servlet.QueryServlet;
@@ -18,9 +19,10 @@ public class Main {
         context.setContextPath("/");
         server.setHandler(context);
 
-        context.addServlet(new ServletHolder(new AddProductServlet()), "/add-product");
-        context.addServlet(new ServletHolder(new GetProductsServlet()), "/get-products");
-        context.addServlet(new ServletHolder(new QueryServlet()), "/query");
+        ProductDAO productDAO = new ProductDAO();
+        context.addServlet(new ServletHolder(new AddProductServlet(productDAO)), "/add-product");
+        context.addServlet(new ServletHolder(new GetProductsServlet(productDAO)), "/get-products");
+        context.addServlet(new ServletHolder(new QueryServlet(productDAO)), "/query");
 
         server.start();
         server.join();

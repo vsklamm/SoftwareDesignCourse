@@ -1,39 +1,26 @@
 package ru.vsklamm.sd.refactoring.servlet;
 
+import ru.vsklamm.sd.refactoring.model.Product;
+import ru.vsklamm.sd.refactoring.model.ProductDAO;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-
-import static ru.vsklamm.sd.refactoring.database.ControllerDB.getConnection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class GetProductsServlet extends AbstractServlet {
 
-    @Override
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws IOException, SQLException {
-        try (var c = getConnection()) {
-            Statement stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM PRODUCT");
-            ArrayList<String> log = new ArrayList<>();
-            printResultSet(rs, log);
-            logHttp(log, response);
-            rs.close();
-            stmt.close();
+    private final ProductDAO productDAO;
 
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public GetProductsServlet(ProductDAO productDAO) {
+        this.productDAO = productDAO;
     }
 
-    static void printResultSet(ResultSet rs, ArrayList<String> log) throws SQLException {
-        while (rs.next()) {
-            var name = rs.getString("name");
-            int price = rs.getInt("price");
-            log.add(name + "\t" + price + "</br>");
-        }
+    @Override
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        List<Product> products = productDAO.getProducts();
+        List<String> log = products.stream().map(Product::toHttp).collect(Collectors.toList());
+        logHttp(log, response);
     }
 }

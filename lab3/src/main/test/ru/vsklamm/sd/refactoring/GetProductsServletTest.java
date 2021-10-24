@@ -2,6 +2,7 @@ package ru.vsklamm.sd.refactoring;
 
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
+import ru.vsklamm.sd.refactoring.model.ProductDAO;
 import ru.vsklamm.sd.refactoring.servlet.GetProductsServlet;
 import ru.vsklamm.sd.refactoring.servlet.ServletTestWrapper;
 
@@ -14,7 +15,7 @@ public class GetProductsServletTest extends ServletTestWrapper {
     @DisplayName("testing GetProductServlet")
     public void someProductsTest() {
         runSQL(SQL_TEST_INPUT);
-        new GetProductsServlet().doGet(mockRequest, mockResponse);
+        new GetProductsServlet(new ProductDAO()).doGet(mockRequest, mockResponse);
         final var result = writer.toString();
         assertTrue(result.contains("bath_water\t1000"));
         assertTrue(result.contains("hydrate\t10"));

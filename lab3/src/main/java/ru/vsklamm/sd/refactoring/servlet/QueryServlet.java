@@ -1,44 +1,19 @@
 package ru.vsklamm.sd.refactoring.servlet;
 
+import ru.vsklamm.sd.refactoring.model.Product;
+import ru.vsklamm.sd.refactoring.model.ProductDAO;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.ArrayList;
-
-import static ru.vsklamm.sd.refactoring.database.ControllerDB.*;
+import java.util.List;
 
 public class QueryServlet extends AbstractServlet {
 
-    private void processOp(String header, String sql, HttpServletResponse response, String op) {
-        try {
-            try (var c = getConnection()) {
-                Statement stmt = c.createStatement();
-                ResultSet rs = stmt.executeQuery(sql);
-                ArrayList<String> log = new ArrayList<>();
-                log.add(header);
-                switch (op) {
-                    case "max":
-                    case "min":
-                        GetProductsServlet.printResultSet(rs, log);
-                        break;
-                    case "sum":
-                    case "count":
-                        if (rs.next()) {
-                            log.add(rs.getString(1));
-                        }
-                        break;
-                    default:
-                        break;
-                }
-                logHttp(log, response);
-                rs.close();
-                stmt.close();
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    private final ProductDAO productDAO;
+
+    public QueryServlet(ProductDAO productDAO) {
+        this.productDAO = productDAO;
     }
 
     @Override
@@ -47,28 +22,24 @@ public class QueryServlet extends AbstractServlet {
 
         switch (command) {
             case "max":
-                String sqlMax = "SELECT * FROM PRODUCT ORDER BY PRICE DESC LIMIT 1";
-                String headerMax = "<h1>Product with max price: </h1>";
-                processOp(headerMax, sqlMax, response, "max");
+                Product maxProduct = productDAO.maxProduct();
+                String maxHeader = "<h1>Product with max price: </h1>";
+                logHttp(List.of(maxHeader, maxProduct.toHttp()), response);
                 break;
             case "min":
-                String sqlMin = "SELECT * FROM PRODUCT ORDER BY PRICE LIMIT 1";
-                String headerMin = "<h1>Product with min price: </h1>";
-                processOp(headerMin, sqlMin, response, "min");
+                Product minProduct = productDAO.minProduct();
+                String minHeader = "<h1>Product with min price: </h1>";
+                logHttp(List.of(minHeader, minProduct.toHttp()), response);
                 break;
             case "sum":
-                String sqlSum = "SELECT SUM(price) FROM PRODUCT";
-                String headerSum = "Summary price: ";
-                processOp(headerSum, sqlSum, response, "sum");
+                logHttp(List.of("Summary price: ", Long.toString(productDAO.sumPrices())), response);
                 break;
             case "count":
-                String sqlCount = "SELECT COUNT(*) FROM PRODUCT";
-                String headerCount = "Number of products: ";
-                processOp(headerCount, sqlCount, response, "count");
+                logHttp(List.of("Number of products: ", Long.toString(productDAO.countProducts())), response);
                 break;
             default:
                 response.getWriter().println("Unknown command: " + command);
+                break;
         }
     }
-
 }

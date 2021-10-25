@@ -16,8 +16,7 @@ public class ControllerDB {
                     "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
                     " NAME           TEXT    NOT NULL, " +
                     " PRICE          INT     NOT NULL)";
-    public static final String DROP_PRODUCT =
-            "DROP TABLE IF EXISTS PRODUCT";
+    public static final String DROP_PRODUCT = "DROP TABLE IF EXISTS PRODUCT";
 
     public static final String SELECT_SQL = "SELECT * FROM PRODUCT";
     public static final String INSERT_SQL = "INSERT INTO PRODUCT (NAME, PRICE) VALUES  ";

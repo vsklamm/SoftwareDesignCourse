@@ -16,9 +16,9 @@ public class AddProductServlet extends AbstractServlet {
 
     @Override
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String name = request.getParameter("name");
-        long price = Long.parseLong(request.getParameter("price"));
-        Product product = new Product(name, price);
+        final var name = request.getParameter("name");
+        final long price = Long.parseLong(request.getParameter("price"));
+        final var product = new Product(name, price);
         productDAO.addProduct(product);
         response.getWriter().println("OK");
     }

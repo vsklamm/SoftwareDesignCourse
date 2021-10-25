@@ -1,6 +1,5 @@
 package ru.vsklamm.sd.refactoring.servlet;
 
-import ru.vsklamm.sd.refactoring.model.Product;
 import ru.vsklamm.sd.refactoring.model.ProductDAO;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,13 +21,13 @@ public class QueryServlet extends AbstractServlet {
 
         switch (command) {
             case "max":
-                Product maxProduct = productDAO.maxProduct();
-                String maxHeader = "<h1>Product with max price: </h1>";
+                final var maxProduct = productDAO.maxProduct();
+                final var maxHeader = "<h1>Product with max price: </h1>";
                 logHttp(List.of(maxHeader, maxProduct.toHttp()), response);
                 break;
             case "min":
-                Product minProduct = productDAO.minProduct();
-                String minHeader = "<h1>Product with min price: </h1>";
+                final var minProduct = productDAO.minProduct();
+                final var minHeader = "<h1>Product with min price: </h1>";
                 logHttp(List.of(minHeader, minProduct.toHttp()), response);
                 break;
             case "sum":

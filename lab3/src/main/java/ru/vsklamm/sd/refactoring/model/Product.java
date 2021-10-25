@@ -6,7 +6,7 @@ public class Product {
     private final String name;
     private final long price;
 
-    public Product(String name, long price) {
+    public Product(final String name, long price) {
         this.name = name;
         this.price = price;
     }

@@ -5,7 +5,7 @@ import java.util.List;
 public interface IProductDAO {
     List<Product> getProducts();
 
-    void addProduct(Product product);
+    void addProduct(final Product product);
 
     Product maxProduct();
 

@@ -10,13 +10,13 @@ import static ru.vsklamm.sd.refactoring.database.ControllerDB.*;
 
 public class ProductDAO implements IProductDAO {
 
-    private Product getMinOrMax(String sql) {
+    private Product getMinOrMax(final String sql) {
         try (var statement = createStatement()) {
             ResultSet rs = statement.executeQuery(sql);
             List<Product> products = new ArrayList<>();
             while (rs.next()) {
-                String name = rs.getString("name");
-                long price = rs.getLong("price");
+                final var name = rs.getString("name");
+                final long price = rs.getLong("price");
 
                 products.add(new Product(name, price));
             }
@@ -27,8 +27,8 @@ public class ProductDAO implements IProductDAO {
     }
 
     private long sumOrCount(String sql) {
-        try (Statement statement = createStatement()) {
-            ResultSet rs = statement.executeQuery(sql);
+        try (var statement = createStatement()) {
+            var rs = statement.executeQuery(sql);
             return rs.getLong("res");
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -37,11 +37,11 @@ public class ProductDAO implements IProductDAO {
 
     @Override
     public List<Product> getProducts() {
-        try (Statement statement = createStatement()) {
-            ResultSet rs = statement.executeQuery(SELECT_SQL);
+        try (var statement = createStatement()) {
+            var rs = statement.executeQuery(SELECT_SQL);
             List<Product> products = new ArrayList<>();
             while (rs.next()) {
-                String name = rs.getString("name");
+                final var name = rs.getString("name");
                 long price = rs.getLong("price");
                 products.add(new Product(name, price));
             }
@@ -52,9 +52,9 @@ public class ProductDAO implements IProductDAO {
     }
 
     @Override
-    public void addProduct(Product product) {
+    public void addProduct(final Product product) {
         try (Statement statement = createStatement()) {
-            String sql = INSERT_SQL + "(\"" + product.getName() + "\"," + product.getPrice() + ")";
+            var sql = INSERT_SQL + "(\"" + product.getName() + "\"," + product.getPrice() + ")";
             statement.executeUpdate(sql);
         } catch (SQLException e) {
             throw new RuntimeException(e);

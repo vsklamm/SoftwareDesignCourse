@@ -1,0 +1,193 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            margin: 0;
+            min-width: 250px;
+            font-family: monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        form {
+            margin-block: 0;
+        }
+
+        ul {
+            margin: 0;
+            padding: 0;
+        }
+
+        ul li {
+            cursor: pointer;
+            position: relative;
+            padding: 12px 8px 12px 40px;
+            list-style-type: none;
+            background: #eee;
+            font-size: 18px;
+            transition: 0.2s;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        ul li:nth-child(odd) {
+            background: #f9f9f9;
+        }
+
+        ul li.ul_li_inner {
+            background: #dadada;
+            margin-right: 32px;
+        }
+
+        ul li:nth-child(odd).ul_li_inner {
+            background: #e4e4e4;
+        }
+
+        ul li.ul_li_inner:hover {
+            background: #e3e3e3;
+        }
+
+        ul li:nth-child(odd).ul_li_inner:hover {
+            background: #d8d8d8;
+        }
+
+        ul li.ul_li_inner.completed {
+            background: #888;
+            color: #fff;
+            text-decoration: line-through;
+        }
+
+        ul li.ul_li_inner.completed::before {
+            content: '';
+            position: absolute;
+            border-color: #fff;
+            border-style: solid;
+            border-width: 0 2px 2px 0;
+            top: 10px;
+            left: 16px;
+            transform: rotate(45deg);
+            height: 15px;
+            width: 7px;
+        }
+
+        .close {
+            position: absolute;
+            right: 0;
+            top: 0;
+            padding: 12px 16px 12px 16px;
+        }
+
+        .close:hover {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .header {
+            background-color: #f44336;
+            padding: 0 40px;
+            color: white;
+            text-align: center;
+        }
+
+        .header:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        input {
+            margin: 0;
+            border: none;
+            border-radius: 0;
+            width: 71%;
+            padding: 10px;
+            float: left;
+            font-size: 16px;
+        }
+
+        .addBtn {
+            padding: 10px;
+            width: 21%;
+            background: #d9d9d9;
+            color: #555;
+            float: left;
+            text-align: center;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            border-radius: 0;
+        }
+
+        .addBtn:hover {
+            background-color: #bbb;
+        }
+
+        .footer {
+            position: fixed;
+            padding: 0 40px;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: red;
+            color: white;
+            text-align: center;
+        }
+    </style>
+    <title>MVC-based To-do list</title>
+</head>
+<body>
+
+<div class="header">
+    <h2 style="padding-top:10px">(mvc) Based ToDo List</h2>
+    <form th:object="${taskList}" method="POST" action="/add-list">
+        <label>
+            <input type="text" placeholder="List name..." th:field="*{name}"/>
+        </label>
+        <input type="submit" value="Add List" class="addBtn">
+    </form>
+</div>
+
+<ul>
+    <li th:each="taskList : ${taskLists}">
+        <form th:name="${'formDeleteTaskList_' + taskList.id}" th:action="@{delete-list}" method="post">
+            <label th:text="${taskList.toHtmlText()}"></label>
+            <input type="hidden" name="listId" th:value="${taskList.id}"/>
+            <span class="close" th:attr="onclick=|${'formDeleteTaskList_' + taskList.id}.submit()|">×</span>
+        </form>
+        <ul>
+            <li class="ul_li_inner"
+                th:each="task : ${taskList.tasks}"
+                th:classappend="${task.status} ? completed"
+                th:attr="onclick=|${'formCompleteTask_' + task.taskId}.submit()|">
+                <form th:name="${'formCompleteTask_' + task.taskId}" th:action="@{task-completed}" method="post">
+                    <input type="hidden" name="taskId" th:value="${task.taskId}"/>
+                </form>
+                <form th:name="${'formDeleteTask_' + task.taskId}" th:action="@{delete-task}" method="post">
+                    <label th:text="${task.toHtmlText()}"></label>
+                    <input type="hidden" name="taskId" th:value="${task.taskId}"/>
+                    <span class="close"
+                          th:attr="onclick=|${'formDeleteTask_' + task.taskId}.submit();event.stopPropagation();|">×</span>
+                </form>
+            </li>
+        </ul>
+    </li>
+</ul>
+
+<div class="footer">
+    <form th:object="${task}" method="POST" action="/add-task">
+        <label style="display: flex;">
+            <input style="width: 8%" type="number" min="0" placeholder="List id" th:field="*{listId}"/>
+            <input type="text" placeholder="What you gonna do?" th:field="*{description}"/>
+            <input type="submit" value="Add Task" class="addBtn">
+        </label>
+    </form>
+</div>
+
+</body>
+</html>

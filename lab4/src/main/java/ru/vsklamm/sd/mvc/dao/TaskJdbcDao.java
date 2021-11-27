@@ -32,7 +32,6 @@ public class TaskJdbcDao extends JdbcDaoSupport implements TaskDao {
 
     @Override
     public void addTask(Task task) {
-        // TODO: check for existence
         final String sql = "INSERT INTO Tasks (list_id, description, status) VALUES (?, ?, ?)";
         getJdbcTemplate().update(sql, task.getListId(), task.getDescription(), 0);
     }

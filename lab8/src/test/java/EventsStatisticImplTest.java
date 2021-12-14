@@ -8,7 +8,7 @@ import java.time.Duration;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class EventsStatisticImplTest {
-    private static final long MINUTES_PER_HOUR = Duration.ofHours(1).toMinutes();
+    private static final long MINUTES_PER_HOUR = Duration.ofHours(1L).toMinutes();
 
     private TimeMachineClock clock;
     private EventsStatistic eventsStatistic;
@@ -44,7 +44,10 @@ class EventsStatisticImplTest {
     @Test
     void testGetEventStatisticByNameOldEvent() {
         eventsStatistic.incEvent("Event #1");
-        clock.addMinutes(60);
+        clock.addMinutes(60L);
+        eventsStatistic.printStatistic();
+        clock.addMinutes(1L);
+        eventsStatistic.printStatistic();
         assertThat(eventsStatistic.getEventStatisticByName("Event #1")).isZero();
     }
 
@@ -52,10 +55,10 @@ class EventsStatisticImplTest {
     void testGetEventStatisticByNameAfterHour() {
         eventsStatistic.incEvent("Event #1");
         eventsStatistic.incEvent("Event #2");
-        clock.addMinutes(60);
+        clock.addMinutes(61L);
         eventsStatistic.incEvent("Event #1");
         assertThat(eventsStatistic.getEventStatisticByName("Event #1")).isEqualTo(countRpm(1));
-        assertThat(eventsStatistic.getEventStatisticByName("Event #2")).isEqualTo(countRpm(0));
+        assertThat(eventsStatistic.getEventStatisticByName("Event #2")).isZero();
     }
 
     @Test
@@ -63,12 +66,12 @@ class EventsStatisticImplTest {
         eventsStatistic.incEvent("Event #1");
         eventsStatistic.incEvent("Event #2");
 
-        clock.addMinutes(20);
+        clock.addMinutes(20L);
 
         eventsStatistic.incEvent("Event #1");
         eventsStatistic.incEvent("Event #2");
 
-        clock.addMinutes(20);
+        clock.addMinutes(20L);
 
         eventsStatistic.incEvent("Event #2");
         eventsStatistic.incEvent("Event #2");
@@ -80,7 +83,7 @@ class EventsStatisticImplTest {
 
         eventsStatistic.printStatistic();
 
-        clock.addMinutes(20);
+        clock.addMinutes(21L);
 
         eventsStatistic.incEvent("Event #3");
         eventsStatistic.incEvent("Event #3");

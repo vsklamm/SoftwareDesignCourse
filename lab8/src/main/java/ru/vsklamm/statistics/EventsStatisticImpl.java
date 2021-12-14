@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Kinda optimized for event registration since there are always more events
+ * Kinda optimized (no) for event registration since there are always more events
  * than requests for stats in any system.
  */
 public class EventsStatisticImpl implements EventsStatistic {
@@ -33,16 +33,16 @@ public class EventsStatisticImpl implements EventsStatistic {
 
     @Override
     public double getEventStatisticByName(final String name) {
-        removeOldStatistic();
+        dropOldStats();
         if (!events.containsKey(name)) {
-            return 0;
+            return 0.0;
         }
         return countRpm(events.get(name).size());
     }
 
     @Override
     public Map<String, Double> getAllEventStatistic() {
-        removeOldStatistic();
+        dropOldStats();
         Map<String, Double> stats = new HashMap<>();
         events.forEach((name, instants) -> stats.put(name, countRpm(instants.size())));
         return stats;
@@ -58,9 +58,10 @@ public class EventsStatisticImpl implements EventsStatistic {
         stats.forEach((name, rpm) -> System.out.printf("| %32s | %12.3f |%n", name, rpm));
     }
 
-    private void removeOldStatistic() {
+    private void dropOldStats() {
         final var hourAgo = clock.instant().minus(1L, ChronoUnit.HOURS);
-        events.replaceAll((n, instants) -> instants.stream().filter(e -> e.isAfter(hourAgo)).toList());
+        events.replaceAll((n, instants) -> instants.stream().dropWhile(e -> e.isBefore(hourAgo)).toList());
+        events.entrySet().removeIf(entry -> entry.getValue().isEmpty());
     }
 
     public double countRpm(final int rph) {
